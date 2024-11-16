@@ -153,6 +153,15 @@ class Minimax_AI(ParticipanteTateti):
             self.tablero.vaciar_celda(x, y)
             
         best_move = max(move_values, key=lambda mv: mv[1])
+
+        # print(best_move)
+        # input('maria')
+
+        # This only happens if the complexity of the board is too large
+        if best_move[1] == 0:
+            best_move = random.choice(self.tablero.moves)
+            return best_move
+
         return best_move[0]
 
     def calculate_depth_limit(self, dimensiones: int) -> int:
