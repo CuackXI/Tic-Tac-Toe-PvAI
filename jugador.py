@@ -35,6 +35,9 @@ class Ficha():
         """
         return str(self.__simbolo)
 
+    def __hash__(self):
+        return hash(self.simbolo())
+
     def __eq__(self, ficha: "Ficha") -> bool:
         """Compara si dos fichas son iguales.
 
@@ -54,6 +57,13 @@ class Ficha():
             raise TypeError(f'No se puede comparar ficha con {type(ficha)}')
 
         return repr(self) == repr(ficha)
+
+    def __lt__(self, elemento: "Ficha"):
+        if elemento is None:
+            return False
+        if not isinstance(elemento, Ficha):
+            raise TypeError(f"No se puede comparar Ficha con {type(elemento)}")
+        return self.simbolo() < elemento.simbolo()
 
 
 class ParticipanteTateti(ABC):
@@ -117,8 +127,7 @@ class Minimax_AI(ParticipanteTateti):
     def colocar_ficha(self, partida: "juego.Tateti"):
         self.contador = 0
         if partida.tablero().tablero_vacio():
-            move = random.choice(((1, 1), (1,3), (3, 1), (3, 3), (2, 2)))
-            print(move)
+            move = random.choice(partida.tablero().moves)
         else:
             move = self.best_action(partida)
         return move
@@ -126,26 +135,32 @@ class Minimax_AI(ParticipanteTateti):
     def best_action(self, partida: "juego.Tateti"):
         move_values = []
         self.tablero = partida.tablero().clone()
-        
+        visited_states = set()
+
         for move in self.tablero.moves:
             x, y = move
-
             self.tablero.insertar_elemento(x, y, self.ficha())
+                
+            normalized_states = self.get_symmetries(self.tablero)
+            if any(state in visited_states for state in normalized_states):
+                self.tablero.vaciar_celda(x, y)
+                continue
+            visited_states.update(normalized_states)
 
-            value = self.minmax(partida, False)
+            value = self.minmax(partida, False, float('-inf'), float('inf'))
             move_values.append((move, value))
 
             self.tablero.vaciar_celda(x, y)
-
+            
         best_move = max(move_values, key=lambda mv: mv[1])
         return best_move[0]
 
-    def minmax(self, partida: "juego.Tateti", is_maximizing: bool):
+    def minmax(self, partida: "juego.Tateti", is_maximizing: bool, alpha: float, beta: float):
         ficha_oponente = partida.jugadores()[1].ficha() if partida.jugadores()[0] == self else partida.jugadores()[0].ficha()
         
-        if self.tablero.check_patrones(self.ficha(), 3):
+        if self.tablero.check_patrones(self.ficha(), partida.fichas_seguidas()):
             return 1
-        elif self.tablero.check_patrones(ficha_oponente, 3):
+        elif self.tablero.check_patrones(ficha_oponente, partida.fichas_seguidas()):
             return -1
         elif self.tablero.tablero_lleno():
             return 0
@@ -155,8 +170,14 @@ class Minimax_AI(ParticipanteTateti):
             for move in self.tablero.moves:
                 x, y = move
                 self.tablero.insertar_elemento(x, y, self.ficha())
-                value = self.minmax(partida, False)
+                value = self.minmax(partida, False, alpha, beta)
                 best_score = max(value, best_score)
+                alpha = max(alpha, best_score)
+
+                if beta <= alpha:
+                    self.tablero.vaciar_celda(x, y)
+                    break
+
                 self.tablero.vaciar_celda(x, y)
             return best_score
         else:
@@ -164,7 +185,45 @@ class Minimax_AI(ParticipanteTateti):
             for move in self.tablero.moves:
                 x, y = move
                 self.tablero.insertar_elemento(x, y, ficha_oponente)
-                value = self.minmax(partida, True)
+                value = self.minmax(partida, True, alpha, beta)
                 best_score = min(value, best_score)
+                beta = min(beta, best_score)
+
+                if beta <= alpha:
+                    self.tablero.vaciar_celda(x, y)
+                    break
+
                 self.tablero.vaciar_celda(x, y)
             return best_score
+
+    def rotar_90(self, matriz):
+        return [list(row) for row in zip(*matriz[::-1])]
+
+    def reflejar(self, matriz):
+        return [row[::-1] for row in matriz]
+    
+    def custom_min(self, estados):
+        def compare(elemento1: "Ficha", elemento2: "Ficha"):
+            if elemento1 is None and elemento2 is None:
+                return 0
+
+            if elemento1 is None:
+                return -1
+
+            if elemento2 is None:
+                return 1
+
+            return (elemento1.simbolo() > elemento2.simbolo()) - (elemento1.simbolo() < elemento2.simbolo())
+
+        return min(estados, key=lambda estado: tuple(tuple(compare(cell1, cell2) for cell1, cell2 in zip(row1, row2)) for row1, row2 in zip(estado, estado)))
+
+    def get_symmetries(self, tablero):
+        symmetries = []
+        matriz = tablero.tablero()
+
+        for _ in range(4):
+            matriz = self.rotar_90(matriz)
+            symmetries.append(tuple(tuple(row) for row in matriz))
+            symmetries.append(tuple(tuple(row) for row in self.reflejar(matriz)))
+
+        return symmetries
