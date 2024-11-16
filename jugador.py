@@ -120,6 +120,7 @@ class Minimax_AI(ParticipanteTateti):
         self.tablero: "tablero_tateti.Tablero" = None
         self.tablero_min_max: "tablero_tateti.Tablero" = None
         self.contador = 0
+        self.depth_limit = 3
 
     def elegir_ficha(self):
         self.set_ficha(Ficha("#"))
@@ -147,7 +148,7 @@ class Minimax_AI(ParticipanteTateti):
             #     continue
             # visited_states.update(normalized_states)
 
-            value = self.minmax(partida, False, float('-inf'), float('inf'))
+            value = self.minmax(partida, False, float('-inf'), float('inf'), 0)
             move_values.append((move, value))
 
             self.tablero.vaciar_celda(x, y)
@@ -155,14 +156,17 @@ class Minimax_AI(ParticipanteTateti):
         best_move = max(move_values, key=lambda mv: mv[1])
         return best_move[0]
 
-    def minmax(self, partida: "juego.Tateti", is_maximizing: bool, alpha: float, beta: float):
+    def minmax(self, partida: "juego.Tateti", is_maximizing: bool, alpha: float, beta: float, depth: int):
         ficha_oponente = partida.jugadores()[1].ficha() if partida.jugadores()[0] == self else partida.jugadores()[0].ficha()
-        
+
         if self.tablero.check_patrones(self.ficha(), partida.fichas_seguidas()):
             return 1
         elif self.tablero.check_patrones(ficha_oponente, partida.fichas_seguidas()):
             return -1
         elif self.tablero.tablero_lleno():
+            return 0
+        
+        if depth >= self.depth_limit and (partida.tablero().columnas() > 3 and partida.tablero().filas()):
             return 0
 
         if is_maximizing:
@@ -170,7 +174,7 @@ class Minimax_AI(ParticipanteTateti):
             for move in self.tablero.moves:
                 x, y = move
                 self.tablero.insertar_elemento(x, y, self.ficha())
-                value = self.minmax(partida, False, alpha, beta)
+                value = self.minmax(partida, False, alpha, beta, depth + 1)
                 best_score = max(value, best_score)
                 alpha = max(alpha, best_score)
 
@@ -185,7 +189,7 @@ class Minimax_AI(ParticipanteTateti):
             for move in self.tablero.moves:
                 x, y = move
                 self.tablero.insertar_elemento(x, y, ficha_oponente)
-                value = self.minmax(partida, True, alpha, beta)
+                value = self.minmax(partida, True, alpha, beta, depth + 1)
                 best_score = min(value, best_score)
                 beta = min(beta, best_score)
 
