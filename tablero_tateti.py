@@ -28,6 +28,10 @@ class TableroTateti(Tablero):
                 self.__tablero[i].append(None)
 
     @property
+    def dimensiones(self):
+        return (self.__columnas + self.__filas) // 2
+
+    @property
     def moves(self):
         available_moves = []
         for row in range(1, self.__filas + 1):

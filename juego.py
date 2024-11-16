@@ -3,14 +3,15 @@
 from tablero_tateti import *
 from jugador import *
 from tateti_ui import TaTeTiUI
+import time
 
 class Tateti():
     """Juego de tateti Player VS AI donde la IA siempre gana o empata."""
     def __init__(self):
         # Configuracion predeterminada
-        self.__tablero = TableroTateti(5, 5)
+        self.__tablero = TableroTateti(3, 3)
         self.__cant_jugadores = 2
-        self.__fichas_seguidas = 4
+        self.__fichas_seguidas = 3
 
         self.__corriendo = True
         self.__UI = TaTeTiUI(self)
@@ -151,7 +152,6 @@ class Tateti():
         nombre = "Player"
 
         self.__jugadores[1].set_nombre(nombre)
-        pass
 
     def __elegir_jugador_inicial(self, mensaje_error = None):
         """Etapa de eleccion del jugador inicial"""
