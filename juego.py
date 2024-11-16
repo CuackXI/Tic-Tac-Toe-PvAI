@@ -8,7 +8,7 @@ class Tateti():
     """Juego de tateti Player VS AI donde la IA siempre gana o empata."""
     def __init__(self):
         # Configuracion predeterminada
-        self.__tablero = TableroTateti(3, 4)
+        self.__tablero = TableroTateti(4, 4)
         self.__cant_jugadores = 2
         self.__fichas_seguidas = 3
 
