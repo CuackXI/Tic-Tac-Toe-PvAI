@@ -138,7 +138,6 @@ class Tateti():
         """Se resetean los jugadores"""
         self.__jugadores.clear()
         self.__jugadores.append(Minimax_AI())
-        self.__jugadores.append(Minimax_AI())
 
     def __reset_tablero(self):
         """Se resetea el tablero"""
@@ -149,11 +148,10 @@ class Tateti():
         self.__fichas = self.__fichas_default
 
     def __settear_nombres(self):
-        # self.__jugadores.append(Jugador())
-        # nombre = "Player"
+        self.__jugadores.append(Jugador())
+        nombre = "Player"
 
-        # self.__jugadores[1].set_nombre(nombre)
-        pass
+        self.__jugadores[1].set_nombre(nombre)
 
     def __elegir_jugador_inicial(self, mensaje_error = None):
         """Etapa de eleccion del jugador inicial"""
