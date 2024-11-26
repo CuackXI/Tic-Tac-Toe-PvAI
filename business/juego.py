@@ -1,8 +1,9 @@
 """Juego de tablero 'Ta-Te-Ti'"""
 
-from tablero_tateti import *
-from jugador import *
-from tateti_ui import TaTeTiUI
+from business.tablero_tateti import *
+from business.jugador import *
+from presentation.terminal_UI import TaTeTiTerminalUI
+from presentation.interfaces import IJuegoUI
 import time
 
 class Tateti():
@@ -14,7 +15,7 @@ class Tateti():
         self.__fichas_seguidas = 3
 
         self.__corriendo = True
-        self.__UI = TaTeTiUI(self)
+        self.__UI: IJuegoUI = TaTeTiTerminalUI(self)
         self.__jugadores = []
         self.__fichas = []
         self.__fichas_default = [Ficha("X"), Ficha("O")]
@@ -216,6 +217,8 @@ class Tateti():
 
         # Se devuelven las elecciones del jugador
         x, y = jugador.colocar_ficha(self)
+
+        self.__UI
 
         try:
             self.__tablero.insertar_elemento(int(x), int(y), jugador.ficha())

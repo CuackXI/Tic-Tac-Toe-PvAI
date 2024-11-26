@@ -1,8 +1,8 @@
 """Clases para el funcionamiento del tablero del Ta-Te-Ti"""
 
-from tablero import Tablero
-import juego as juego
-import jugador
+from business.tablero import Tablero
+import business.juego as juego
+import business.jugador as jugador
 
 class TableroTateti(Tablero):
     """Tablero cuyo proposito es su uso en juegos de TaTeTi o variantes compatibles"""

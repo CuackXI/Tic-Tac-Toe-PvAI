@@ -76,10 +76,3 @@ class Tablero(ABC):
     @abstractmethod
     def check_patrones(self):
         """Chequea por determinados patrones de elementos en la matriz."""
-
-class TableroUI(ABC):
-    """Estandarización de UI de tableros."""
-
-    @abstractmethod
-    def mostrar_tablero(self):
-        """Muestra el tablero en terminal."""

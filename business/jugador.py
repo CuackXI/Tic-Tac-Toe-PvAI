@@ -1,7 +1,7 @@
 """Clases para el funcionamiento de un Participante en una partida de Ta-Te-Ti."""
 
-import tablero_tateti as tablero_tateti
-import juego as juego
+import business.tablero_tateti as tablero_tateti
+import business.juego as juego
 from abc import ABC, abstractmethod
 import random
 
@@ -153,14 +153,6 @@ class Minimax_AI(ParticipanteTateti):
             self.tablero.vaciar_celda(x, y)
             
         best_move = max(move_values, key=lambda mv: mv[1])
-
-        # print(best_move)
-        # input('maria')
-
-        # This only happens if the complexity of the board is too large
-        if best_move[1] == 0:
-            best_move = random.choice(self.tablero.moves)
-            return best_move
 
         return best_move[0]
 
