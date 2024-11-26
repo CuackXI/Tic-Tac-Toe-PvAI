@@ -9,6 +9,7 @@ class Button(IButton):
         self.__text = text
         self.__rect = pygame.Rect(x, y, self.width, self.height)
         self.__clicked = False
+        self.__font = pygame.font.Font(None, 10)
 
     @property
     def clicked(self) -> bool:
@@ -36,3 +37,11 @@ class Button(IButton):
     @property
     def text(self) -> str:
         return self.__text
+    
+    @property
+    def font(self):
+        return self.__font
+
+    @property
+    def rect(self):
+        return self.__rect

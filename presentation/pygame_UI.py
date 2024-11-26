@@ -1,31 +1,46 @@
 """Controladores de terminal para el juego TaTeTi."""
 
-import platform
-from os import system
-from time import sleep
 import business.juego as juego
 import business.tablero_tateti as tablero_tateti
-from presentation.interfaces import IJuegoUI, TableroUI
+from presentation.interfaces import IJuegoUI, TableroUI, IMenu
+import pygame
 
-class TaTeTiTerminalUI(IJuegoUI):
+class Display():
+    def __init__(self, tateti):
+        self.__screen = pygame.display.set_mode((400, 400))
+        self.__tateti = tateti
+
+    def __draw_menu(self, menu: IMenu):
+        for clickable in menu.clickables:
+            pygame.draw.rect(self.__screen, clickable.color, clickable.rect)
+            surface = clickable.font.render(clickable.text, True, (255, 255, 255))
+            self.__screen.blit(surface, (text.x, text.y))
+
+        try:
+            for text in menu.texts:
+                surface = text.font.render(text.text, True, (255, 255, 255))
+                self.__screen.blit(surface, (text.x, text.y))
+        except:
+            pass
+
+    def render_frame(self, menu: IMenu):
+        self.__draw_menu(menu)
+
+        pygame.display.flip()
+
+class TatetiPYGAME_UI(IJuegoUI):
     """Controlador de UI en la terminal del juego TaTeTi."""
 
     def __init__(self, tateti: "juego.Tateti"):
         if not isinstance(tateti, juego.Tateti):
             raise TypeError("Se debe pasar una instancia de juego por parametro.")
 
+        self.__display = Display(tateti)
         self.__tateti = tateti
         self.__tableroUI = TableroTatetiTerminalUI(self.__tateti.tablero())
 
-    def cls(self):
-        """Vacia la terminal (solo en windows)."""
-        if platform.system() == "Windows":
-            system('cls')
-
     def pantalla_bienvenida(self):
-        self.cls()
-        print("\n\t\t\tTa-Te-Ti\n\t\t      Player VS AI")
-        sleep(3)
+        pass
 
     def mostrar_error(self, mensaje: str):
         """Usado para mostrar mensajes de error
@@ -53,17 +68,13 @@ class TaTeTiTerminalUI(IJuegoUI):
 
     def mensaje_ganador(self):
         """Mensaje que se muestra al ganar la partida"""
-        self.cls()
         self.mostrar_tablero()
         print(f'Ganó {self.__tateti.jugador_actual().nombre()}')
-        sleep(2)
 
     def mensaje_empate(self):
         """Mensaje que se muestra al empatar la partida"""
-        self.cls()
         self.mostrar_tablero()
         print("Empate")
-        sleep(2)
 
 class TableroTatetiTerminalUI(TableroUI):
     """Clase que maneja como se muestra el tablero en la terminal."""

@@ -2,9 +2,9 @@
 
 from business.tablero_tateti import *
 from business.jugador import *
-from presentation.terminal_UI import TaTeTiTerminalUI
+from presentation.pygame_UI import TatetiPYGAME_UI, Display
 from presentation.interfaces import IJuegoUI
-import time
+import pygame
 
 class Tateti():
     """Juego de tateti Player VS AI donde la IA siempre gana o empata."""
@@ -15,7 +15,7 @@ class Tateti():
         self.__fichas_seguidas = 3
 
         self.__corriendo = True
-        self.__UI: IJuegoUI = TaTeTiTerminalUI(self)
+        self.__UI: IJuegoUI = TatetiPYGAME_UI(self)
         self.__jugadores = []
         self.__fichas = []
         self.__fichas_default = [Ficha("X"), Ficha("O")]
@@ -64,6 +64,10 @@ class Tateti():
     @classmethod
     def iniciar(clase):
         """Inicia el juego de Ta-Te-Ti"""
+        pygame.init()
+
+
+
         tateti = clase()
         tateti.__UI.pantalla_bienvenida()
         tateti.__menu()
@@ -71,7 +75,6 @@ class Tateti():
     def __menu(self, mensaje_error = None):
         """Etapa donde se recorre el menu principal"""
         while self.__corriendo:
-            self.__UI.cls()
             self.__UI.mostrar_opciones_menu_principal()
 
             # Si se generó un mensaje de error, se muestra
@@ -123,8 +126,8 @@ class Tateti():
 
     def __salir_del_juego(self):
         """Termina la ejecucion del juego"""
-        self.__UI.cls()
         self.__corriendo = False
+        pygame.quit()
 
     def __set_up_inicial(self):
         """Establece un estado inicial para empezar la partida"""
@@ -157,7 +160,6 @@ class Tateti():
 
     def __elegir_jugador_inicial(self, mensaje_error = None):
         """Etapa de eleccion del jugador inicial"""
-        self.__UI.cls()
         self.__UI.mostrar_opciones_eleccion_jugador_inicial()
         
         # Si hay un mensaje de error se muestra
@@ -178,7 +180,6 @@ class Tateti():
 
     def __settear_fichas(self):
         """Setteo de fichas X y O a los primeros 2 jugadores"""
-        self.__UI.cls()
 
         indice_ficha = 0
         indice_jugador = 0
@@ -207,7 +208,6 @@ class Tateti():
             jugador (tablero_tateti.ParticipanteTateti): El participante que tiene su turno.
         """
 
-        self.__UI.cls()
         self.__UI.mostrar_tablero()
         self.__UI.mostrar_turno_jugador(jugador)
 
@@ -248,5 +248,3 @@ class Tateti():
         self.__indice_turno += 1
         if self.__indice_turno == len(self.__jugadores):
             self.__indice_turno = 0
-
-        self.__UI.cls()
