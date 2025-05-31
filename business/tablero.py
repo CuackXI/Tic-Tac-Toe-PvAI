@@ -74,5 +74,14 @@ class Tablero(ABC):
         """
 
     @abstractmethod
+    def vaciar_celda(self, x: int, y: int):
+        """Vacia una celda
+
+        Args:
+            x (int): Coordenada x
+            y (int): Coordenada y
+        """
+
+    @abstractmethod
     def check_patrones(self):
         """Chequea por determinados patrones de elementos en la matriz."""

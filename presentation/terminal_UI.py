@@ -16,11 +16,13 @@ class TaTeTiTerminalUI(IJuegoUI):
 
         self.__tateti = tateti
         self.__tableroUI = TableroTatetiTerminalUI(self.__tateti.tablero())
-
+        
     def cls(self):
-        """Vacia la terminal (solo en windows)."""
+        """Limpia la terminal en Windows, Linux y macOS."""
         if platform.system() == "Windows":
             system('cls')
+        else:
+            system('clear')
 
     def pantalla_bienvenida(self):
         self.cls()

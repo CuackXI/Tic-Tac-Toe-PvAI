@@ -4,21 +4,26 @@ from business.tablero_tateti import *
 from business.jugador import *
 from presentation.terminal_UI import TaTeTiTerminalUI
 from presentation.interfaces import IJuegoUI
-import time
+from settings import (
+    TABLERO_FILAS,
+    TABLERO_COLUMNAS,
+    FICHAS_SEGUIDAS_GANAR,
+    FICHAS_DEFAULT,
+    NOMBRE_JUGADOR_HUMANO
+)
 
 class Tateti():
     """Juego de tateti Player VS AI donde la IA siempre gana o empata."""
     def __init__(self):
-        # Configuracion predeterminada
-        self.__tablero = TableroTateti(3, 3)
+        self.__tablero = TableroTateti(TABLERO_FILAS, TABLERO_COLUMNAS)
         self.__cant_jugadores = 2
-        self.__fichas_seguidas = 3
+        self.__fichas_seguidas = FICHAS_SEGUIDAS_GANAR
 
         self.__corriendo = True
         self.__UI: IJuegoUI = TaTeTiTerminalUI(self)
         self.__jugadores = []
         self.__fichas = []
-        self.__fichas_default = [Ficha("X"), Ficha("O")]
+        self.__fichas_default = [Ficha(simbolo) for simbolo in FICHAS_DEFAULT]
         self.__indice_turno = 0
 
         # Opciones de menu
@@ -149,9 +154,7 @@ class Tateti():
 
     def __settear_nombres(self):
         self.__jugadores.append(Jugador())
-        nombre = "Player"
-
-        self.__jugadores[1].set_nombre(nombre)
+        self.__jugadores[1].set_nombre(NOMBRE_JUGADOR_HUMANO)
 
     def __elegir_jugador_inicial(self, mensaje_error = None):
         """Etapa de eleccion del jugador inicial"""

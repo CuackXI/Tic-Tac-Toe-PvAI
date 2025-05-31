@@ -12,4 +12,12 @@ Este proyecto utiliza una IA diseñada para no perder nunca. Fue creado como eje
 - Implementación en consola con Python puro.
 - Lógica de IA basada en toma de decisiones óptima.
 
+## Configuración
+El proyecto es configurable desde el archivo settings.py
+
+## Como ejecutar
+- make setup
+- source venv/bin/activate
+- make run
+
 ---

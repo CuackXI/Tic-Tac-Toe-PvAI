@@ -164,19 +164,22 @@ class Minimax_AI(ParticipanteTateti):
 
         for move in self.tablero.moves:
             x, y = move
-            self.tablero.insertar_elemento(x, y, ficha_oponente)
-
+            self.tablero.insertar_elemento(x, y, self.ficha())
             if self.tablero.check_patrones(self.ficha(), partida.fichas_seguidas()):
                 self.tablero.vaciar_celda(x, y)
                 return move
+            self.tablero.vaciar_celda(x, y)
 
+        for move in self.tablero.moves:
+            x, y = move
+            self.tablero.insertar_elemento(x, y, ficha_oponente)
             if self.tablero.check_patrones(ficha_oponente, partida.fichas_seguidas()):
                 self.tablero.vaciar_celda(x, y)
                 return move
-            
             self.tablero.vaciar_celda(x, y)
 
         return None
+
     
     def minmax(self, partida: "juego.Tateti", is_maximizing: bool, alpha: float, beta: float, depth: int):
         ficha_oponente = partida.jugadores()[1].ficha() if partida.jugadores()[0] == self else partida.jugadores()[0].ficha()
