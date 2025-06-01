@@ -16,8 +16,10 @@ Este proyecto utiliza una IA diseñada para no perder nunca. Fue creado como eje
 El proyecto es configurable desde el archivo settings.py
 
 ## Como ejecutar
-- make setup
-- source venv/bin/activate
-- make run
+```bash
+make setup
+source venv/bin/activate
+make run
+```
 
 ---
